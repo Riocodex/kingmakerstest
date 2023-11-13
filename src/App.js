@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 
 function App() {
   const [campaigns, setCampaigns] = useState([]);
+  // const [campaigns, setCampaigns] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const data = [
     {"id":1,"name":"Divavu","startDate":"9/19/2017","endDate":"3/9/2018","budget":88377},
@@ -37,14 +39,31 @@ function App() {
       };
     });
 
-    setCampaigns(mappedCampaigns);
-  }, []);
+        // Filter campaigns based on the search query
+        const filteredCampaigns = mappedCampaigns.filter(campaign =>
+          campaign.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    
+
+        setCampaigns(filteredCampaigns);
+    }, [searchQuery]);
+
+
+      // Function to handle changes in the search input
+  const handleSearchChange = event => {
+    setSearchQuery(event.target.value);
+  };
 
   return (
     <div>
       <div className="search-container">
-        <input type="text" placeholder='Search by name or date' />
-      </div>
+      <input
+          type="text"
+          placeholder="Search by name or date"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        /> 
+         </div>
       <table id="campaignTable">
         <tr className="active">
           <th>Name</th>
