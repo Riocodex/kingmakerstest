@@ -2,11 +2,14 @@ import './App.css';
 import { useState, useEffect } from 'react';
 
 function App() {
+
+  //intializing state variables
   const [campaigns, setCampaigns] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [nameSearch, setNameSearch] = useState('');
   const [dateRangeSearch, setDateRangeSearch] = useState('');
 
+  //dummy data
   const data = [
     {"id":1,"name":"Divavu","startDate":"9/19/2017","endDate":"3/9/2018","budget":88377},
     {"id":2,"name":"Jaxspan","startDate":"11/21/2017","endDate":"2/21/2027","budget":608715},
@@ -19,6 +22,7 @@ function App() {
     {"id":9,"name":"Zoomcast","startDate":"9/6/2017","endDate":"11/10/2025","budget":301919},
     {"id":10,"name":"Realbridge","startDate":"3/5/2018","endDate":"10/2/2017","budget":505602}
   ];
+
 
   useEffect(() => {
     // Map the data and calculate the status (active or inactive) based on the date
@@ -51,6 +55,7 @@ function App() {
         setCampaigns(filteredCampaigns);
     }, [nameSearch, dateRangeSearch]);
 
+    //date filter function
     const isDateInRange = (dateString, searchDateRange) => {
       const date = new Date(dateString);
     
@@ -79,7 +84,7 @@ function App() {
     };
 
 
-
+        //getting input values
         const handleNameSearchChange = event => {
           setNameSearch(event.target.value);
         };
@@ -89,6 +94,7 @@ function App() {
         };
 
   return (
+    //frontend
     <div>
       <div className="search-container">
         <input
