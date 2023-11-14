@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 
 function App() {
   const [campaigns, setCampaigns] = useState([]);
-  // const [campaigns, setCampaigns] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [nameSearch, setNameSearch] = useState('');
+  const [dateRangeSearch, setDateRangeSearch] = useState('');
 
   const data = [
     {"id":1,"name":"Divavu","startDate":"9/19/2017","endDate":"3/9/2018","budget":88377},
@@ -39,30 +40,69 @@ function App() {
       };
     });
 
-        // Filter campaigns based on the search query
         const filteredCampaigns = mappedCampaigns.filter(campaign =>
-          campaign.name.toLowerCase().includes(searchQuery.toLowerCase())
+          campaign.name.toLowerCase().includes(nameSearch.toLowerCase()) &&
+          isDateInRange(campaign.startDate, dateRangeSearch) &&
+          isDateInRange(campaign.endDate, dateRangeSearch)
         );
+
     
 
         setCampaigns(filteredCampaigns);
-    }, [searchQuery]);
+    }, [nameSearch, dateRangeSearch]);
+
+    const isDateInRange = (dateString, searchDateRange) => {
+      const date = new Date(dateString);
+    
+      // Parse the searchDateRange into start and end dates
+      const [startString, endString] = searchDateRange.split('-').map(str => str.trim());
+    
+      try {
+        const startDate = startString ? new Date(startString) : null;
+        const endDate = endString ? new Date(endString) : null;
+    
+        // Check if the end date is after or equal to the start date
+        if (startDate && endDate && endDate < startDate) {
+          return false; // End date before start date, not within range
+        }
+    
+        // Check if the date is within the specified range
+        return (
+          (!startDate || date >= startDate) &&
+          (!endDate || date <= endDate)
+        );
+      } catch (error) {
+        // Handle parsing errors
+        console.error("Error parsing date:", error);
+        return false;
+      }
+    };
 
 
-      // Function to handle changes in the search input
-  const handleSearchChange = event => {
-    setSearchQuery(event.target.value);
-  };
+
+        const handleNameSearchChange = event => {
+          setNameSearch(event.target.value);
+        };
+      
+        const handleDateRangeSearchChange = event => {
+          setDateRangeSearch(event.target.value);
+        };
 
   return (
     <div>
       <div className="search-container">
-      <input
-          type="text"
-          placeholder="Search by name or date"
-          value={searchQuery}
-          onChange={handleSearchChange}
-        /> 
+        <input
+            type="text"
+            placeholder="Search by name"
+            value={nameSearch}
+            onChange={handleNameSearchChange}
+          />
+          <input
+            type="text"
+            placeholder="Search by date range (e.g., 2023-01-01 - 2023-12-31)"
+            value={dateRangeSearch}
+            onChange={handleDateRangeSearchChange}
+          />
          </div>
       <table id="campaignTable">
         <tr className="active">
